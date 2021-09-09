@@ -1,0 +1,76 @@
+﻿@model hey_url_challenge_code_dotnet.ViewModels.HomeViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (TempData["Notice"] is not null)
+{
+    <div class="card-panel notice deep-orange">@TempData["Notice"]</div>
+}
+
+<div class="row">
+    <div class="col m12">
+        <form asp-action="Create" method="post" name="theForm" id="theForm">
+            <div class="card">
+                <div class="card-content">
+                    <div class="row">
+                        <div class="col m8 offset-m2 center-align">
+                            <span class="card-title">Create a new short URL</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col m6 offset-m2">
+                            <input type="text" id="url" name="url" class="validate form-control" placeholder="Your original URL here" />
+                        </div>
+                        <div class="col m2">
+                            <button type="button" id="button" class="btn" onclick="validateURL(this)">Shorten URL</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<table class="table highlight">
+    <thead>
+        <tr>
+            <th scope="col">Short URL</th>
+            <th scope="col">Original URL</th>
+            <th scope="col">Created</th>
+            <th scope="col">Clicks Count</th>
+            <th scope="col">Stats</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var url in Model.Urls)
+        {
+        <tr>
+            <th scope="row"><a href="@url.ShortUrl">@url.ShortUrl</a></th>
+            <td><a href="@url.OriginalUrl">@url.OriginalUrl</a></td>
+            <!--<td> Please match the same format Feb 24, 2021</td>-->
+            <td>@url.Created.ToString("MMMM dd, yyyy")</td>
+            <td>@url.Count</td>
+            <td>
+                <a href=@string.Format("/urls/{0}", url.ShortUrl)>
+                    <svg class="octicon octicon-graph" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M16 14v1H0V0h1v14h15zM5 13H3V8h2v5zm4 0H7V3h2v10zm4 0h-2V6h2v7z"></path>
+                    </svg>
+                </a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>
+<script type="text/javascript">
+    function validateURL(textval) {
+          var urlregex = new RegExp( "^(http|https|ftp)\://([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&amp;%\$\-]+)*)*((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-]+\.)*[a-zA-Z0-9\-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(\:[0-9]+)*(/($|[a-zA-Z0-9\.\,\?\'\\\+&amp;%\$#\=~_\-]+))*$");
+        console.log(document.getElementById('url').value);
+        if (urlregex.test(document.getElementById('url').value)) {
+            document.theForm.submit();
+        } else {
+            alert("Url its not valid");
+        }
+
+}
+</script>
